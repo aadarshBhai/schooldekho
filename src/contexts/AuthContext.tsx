@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE}/api/auth/login`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signup = async (userData: Partial<User>): Promise<boolean> => {
     try {
       console.log('Sending signup request with data:', userData);
-      const response = await fetch(`${import.meta.env.VITE_API_BASE}/api/auth/register`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -142,7 +142,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const adminLogin = async (email: string, password: string): Promise<boolean> => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE}/api/auth/admin/login`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE}/auth/admin/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -186,7 +186,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!user || !token) return false;
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE}/api/auth/profile`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE}/auth/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

@@ -90,7 +90,7 @@ export const fetchEvents = async (filters: EventFilters = {}): Promise<Event[]> 
     }
   });
 
-  const res = await fetch(`/api/events?${params.toString()}`);
+  const res = await fetch(`${API_BASE}/events?${params.toString()}`);
   if (!res.ok) throw new Error('Failed to fetch events');
   const events = await res.json();
   // Ensure each event has an `id` field for UI compatibility
@@ -98,7 +98,7 @@ export const fetchEvents = async (filters: EventFilters = {}): Promise<Event[]> 
 };
 
 export const fetchEventById = async (id: string): Promise<Event> => {
-  const res = await fetch(`${API_BASE}/api/events/${id}`);
+  const res = await fetch(`${API_BASE}/events/${id}`);
   if (!res.ok) {
     const error = await res.json().catch(() => ({}));
     throw new Error(error.message || 'Event not found');
@@ -108,7 +108,7 @@ export const fetchEventById = async (id: string): Promise<Event> => {
 };
 
 export const fetchCommentsForEvent = async (eventId: string): Promise<Comment[]> => {
-  const res = await fetch(`${API_BASE}/api/comments?eventId=${eventId}`);
+  const res = await fetch(`${API_BASE}/comments?eventId=${eventId}`);
   if (!res.ok) return [];
   const comments = await res.json();
   return comments.map((c: any) => ({
@@ -116,10 +116,11 @@ export const fetchCommentsForEvent = async (eventId: string): Promise<Comment[]>
     id: c._id || c.id,
   }));
 };
+
 // ... existing methods ...
 
 export const createEvent = async (eventData: Partial<Event>, token: string): Promise<Event> => {
-  const res = await fetch(`${API_BASE}/api/events/json`, {
+  const res = await fetch(`${API_BASE}/events/json`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -136,7 +137,7 @@ export const createEvent = async (eventData: Partial<Event>, token: string): Pro
 };
 
 export const updateEvent = async (id: string, eventData: Partial<Event>, token: string): Promise<Event> => {
-  const res = await fetch(`${API_BASE}/api/events/${id}`, {
+  const res = await fetch(`${API_BASE}/events/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -153,7 +154,7 @@ export const updateEvent = async (id: string, eventData: Partial<Event>, token: 
 };
 
 export const deleteEvent = async (id: string, token: string): Promise<void> => {
-  const res = await fetch(`${API_BASE}/api/events/${id}`, {
+  const res = await fetch(`${API_BASE}/events/${id}`, {
     method: 'DELETE',
     headers: {
       'Authorization': `Bearer ${token}`
@@ -168,7 +169,7 @@ export const approveEvent = async (id: string, approved: boolean, token: string)
 
 // Like/Unlike an event
 export const likeEvent = async (eventId: string, userId: string): Promise<{ liked: boolean; likes: number }> => {
-  const res = await fetch(`${API_BASE}/api/events/${eventId}/like`, {
+  const res = await fetch(`${API_BASE}/events/${eventId}/like`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ userId }),
@@ -179,7 +180,7 @@ export const likeEvent = async (eventId: string, userId: string): Promise<{ like
 
 // Check if user liked an event
 export const checkLikeStatus = async (eventId: string, userId: string): Promise<boolean> => {
-  const res = await fetch(`${API_BASE}/api/events/${eventId}/like-status?userId=${userId}`);
+  const res = await fetch(`${API_BASE}/events/${eventId}/like-status?userId=${userId}`);
   if (!res.ok) return false;
   const data = await res.json();
   return data.liked;
@@ -187,7 +188,7 @@ export const checkLikeStatus = async (eventId: string, userId: string): Promise<
 
 // Share an event (increment share count)
 export const shareEvent = async (eventId: string): Promise<{ shares: number }> => {
-  const res = await fetch(`${API_BASE}/api/events/${eventId}/share`, {
+  const res = await fetch(`${API_BASE}/events/${eventId}/share`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
   });
@@ -197,7 +198,7 @@ export const shareEvent = async (eventId: string): Promise<{ shares: number }> =
 
 // Edit a comment
 export const editComment = async (commentId: string, text: string, token: string): Promise<Comment> => {
-  const res = await fetch(`${API_BASE}/api/comments/${commentId}`, {
+  const res = await fetch(`${API_BASE}/comments/${commentId}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -215,7 +216,7 @@ export const editComment = async (commentId: string, text: string, token: string
 
 // Delete a comment
 export const deleteComment = async (commentId: string, token: string): Promise<void> => {
-  const res = await fetch(`${API_BASE}/api/comments/${commentId}`, {
+  const res = await fetch(`${API_BASE}/comments/${commentId}`, {
     method: 'DELETE',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -229,7 +230,7 @@ export const deleteComment = async (commentId: string, token: string): Promise<v
 
 // Permanent account deletion
 export const deleteAccount = async (token: string): Promise<void> => {
-  const res = await fetch(`${API_BASE}/api/auth/profile`, {
+  const res = await fetch(`${API_BASE}/auth/profile`, {
     method: 'DELETE',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -260,7 +261,7 @@ export interface User {
 
 // Fetch all users (admin only)
 export const fetchAllUsers = async (token: string): Promise<User[]> => {
-  const res = await fetch(`${API_BASE}/api/admin/users`, {
+  const res = await fetch(`${API_BASE}/admin/users`, {
     headers: {
       'Authorization': `Bearer ${token}`,
     },
@@ -275,7 +276,7 @@ export const fetchAllUsers = async (token: string): Promise<User[]> => {
 
 // Fetch pending users (organizers awaiting verification)
 export const fetchPendingUsers = async (token: string): Promise<User[]> => {
-  const res = await fetch(`${API_BASE}/api/admin/users?status=pending`, {
+  const res = await fetch(`${API_BASE}/admin/users?status=pending`, {
     headers: {
       'Authorization': `Bearer ${token}`,
     },
@@ -290,7 +291,7 @@ export const fetchPendingUsers = async (token: string): Promise<User[]> => {
 
 // Verify or Reject a user
 export const verifyUser = async (userId: string, verified: boolean, token: string): Promise<User> => {
-  const res = await fetch(`${API_BASE}/api/admin/users/${userId}/verify`, {
+  const res = await fetch(`${API_BASE}/admin/users/${userId}/verify`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -310,7 +311,7 @@ export const verifyUser = async (userId: string, verified: boolean, token: strin
 
 // Admin: Delete a user and all their events
 export const deleteUser = async (userId: string, token: string): Promise<void> => {
-  const res = await fetch(`${API_BASE}/api/admin/users/${userId}`, {
+  const res = await fetch(`${API_BASE}/admin/users/${userId}`, {
     method: 'DELETE',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -325,7 +326,7 @@ export const deleteUser = async (userId: string, token: string): Promise<void> =
 
 // Fetch all comments made by a user
 export const fetchCommentsByUserId = async (userId: string): Promise<Comment[]> => {
-  const res = await fetch(`${API_BASE}/api/comments/user/${userId}`);
+  const res = await fetch(`${API_BASE}/comments/user/${userId}`);
   if (!res.ok) return [];
   const comments = await res.json();
   return comments.map((c: any) => ({
@@ -336,7 +337,7 @@ export const fetchCommentsByUserId = async (userId: string): Promise<Comment[]> 
 
 // Fetch any user's profile info
 export const fetchUserProfile = async (userId: string): Promise<User | null> => {
-  const res = await fetch(`${API_BASE}/api/auth/profile/${userId}`);
+  const res = await fetch(`${API_BASE}/auth/profile/${userId}`);
   if (!res.ok) return null;
   const data = await res.json();
   return { ...data, id: data._id || data.id };
@@ -344,7 +345,7 @@ export const fetchUserProfile = async (userId: string): Promise<User | null> => 
 
 // Fetch all events liked by a user
 export const fetchLikedEvents = async (userId: string): Promise<Event[]> => {
-  const res = await fetch(`${API_BASE}/api/events/user/liked/${userId}`);
+  const res = await fetch(`${API_BASE}/events/user/liked/${userId}`);
   if (!res.ok) return [];
   const events = await res.json();
   return events.map((e: any) => ({ ...e, id: e._id || e.id }));
@@ -353,14 +354,14 @@ export const fetchLikedEvents = async (userId: string): Promise<Event[]> => {
 // --- Sponsor Ad Functions ---
 
 export const fetchActiveAds = async (): Promise<SponsorAd[]> => {
-  const res = await fetch(`${API_BASE}/api/ads/active`);
+  const res = await fetch(`${API_BASE}/ads/active`);
   if (!res.ok) return [];
   const ads = await res.json();
   return ads.map((ad: any) => ({ ...ad, id: ad._id }));
 };
 
 export const fetchAllAds = async (token: string): Promise<SponsorAd[]> => {
-  const res = await fetch(`${API_BASE}/api/ads`, {
+  const res = await fetch(`${API_BASE}/ads`, {
     headers: { 'Authorization': `Bearer ${token}` }
   });
   if (!res.ok) return [];
@@ -369,7 +370,7 @@ export const fetchAllAds = async (token: string): Promise<SponsorAd[]> => {
 };
 
 export const createSponsorAd = async (adData: Partial<SponsorAd>, token: string): Promise<SponsorAd> => {
-  const res = await fetch(`${API_BASE}/api/ads`, {
+  const res = await fetch(`${API_BASE}/ads`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -386,7 +387,7 @@ export const createSponsorAd = async (adData: Partial<SponsorAd>, token: string)
 };
 
 export const deleteSponsorAd = async (id: string, token: string): Promise<void> => {
-  const res = await fetch(`${API_BASE}/api/ads/${id}`, {
+  const res = await fetch(`${API_BASE}/ads/${id}`, {
     method: 'DELETE',
     headers: { 'Authorization': `Bearer ${token}` }
   });
@@ -402,7 +403,7 @@ export interface AdminStats {
 }
 
 export const fetchAdminStats = async (token: string): Promise<AdminStats> => {
-  const res = await fetch(`${API_BASE}/api/admin/stats`, {
+  const res = await fetch(`${API_BASE}/admin/stats`, {
     headers: {
       'Authorization': `Bearer ${token}`,
     },

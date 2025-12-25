@@ -43,13 +43,18 @@ export const ProfileSidebar = () => {
               <h3 className="font-semibold text-lg">{user.name}</h3>
               <p className="text-sm text-muted-foreground">{user.email}</p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <Badge variant={user.verified ? "default" : "secondary"}>
                 {user.verified ? "Verified" : "Unverified"}
               </Badge>
               <Badge variant="outline">
                 {user.role}
               </Badge>
+              {user.role === 'organizer' && user.verified && (
+                <Badge variant="default" className="bg-green-500 hover:bg-green-600">
+                  ✓ Verified Organizer
+                </Badge>
+              )}
             </div>
           </div>
         </CardHeader>

@@ -85,7 +85,7 @@ const Dashboard = () => {
     uploadData.append('file', file);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE}/api/upload`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE}/upload`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
         body: uploadData,

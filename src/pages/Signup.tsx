@@ -50,7 +50,7 @@ const Signup = () => {
     uploadData.append('file', file);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE || 'http://localhost:5000'}/api/upload`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE || 'http://localhost:5000'}/upload`, {
         method: 'POST',
         body: uploadData,
       });
