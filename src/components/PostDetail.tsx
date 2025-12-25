@@ -229,7 +229,7 @@ export const PostDetail = ({ eventId, initialEvent, isModal, onClose, className 
         >
 
             {/* Left Column: Visuals */}
-            <div className="lg:w-[65%] bg-black relative flex items-center justify-center group h-[50vh] md:h-[60vh] lg:h-full lg:min-h-full overflow-hidden shrink-0">
+            <div className="lg:w-[65%] bg-black relative flex items-center justify-center group h-[40vh] xs:h-[45vh] sm:h-[50vh] md:h-[60vh] lg:h-full lg:min-h-full overflow-hidden shrink-0">
                 <div
                     className="absolute inset-0 opacity-20 blur-3xl scale-125 pointer-events-none"
                     style={{
@@ -259,8 +259,8 @@ export const PostDetail = ({ eventId, initialEvent, isModal, onClose, className 
                                     </CarouselItem>
                                 ))}
                             </CarouselContent>
-                            <CarouselPrevious className="left-4 bg-black/50 hover:bg-black text-white border-none h-10 w-10" />
-                            <CarouselNext className="right-4 bg-black/50 hover:bg-black text-white border-none h-10 w-10" />
+                            <CarouselPrevious className="left-2 xs:left-4 bg-black/50 hover:bg-black text-white border-none h-8 w-8 xs:h-10 xs:w-10" />
+                            <CarouselNext className="right-2 xs:right-4 bg-black/50 hover:bg-black text-white border-none h-8 w-8 xs:h-10 xs:w-10" />
                         </Carousel>
                     ) : (
                         <img
@@ -271,18 +271,18 @@ export const PostDetail = ({ eventId, initialEvent, isModal, onClose, className 
                     )}
                 </div>
 
-                <div className="absolute top-4 left-4 lg:hidden z-20">
-                    <Button variant="ghost" size="icon" onClick={handleClose} className="rounded-full bg-black/40 text-white hover:bg-black/60">
-                        {isModal ? <X className="h-5 w-5" /> : <ArrowLeft className="h-5 w-5" />}
+                <div className="absolute top-2 xs:top-4 left-2 xs:left-4 lg:hidden z-20">
+                    <Button variant="ghost" size="icon" onClick={handleClose} className="rounded-full bg-black/40 text-white hover:bg-black/60 h-8 w-8 xs:h-10 xs:w-10">
+                        {isModal ? <X className="h-4 w-4 xs:h-5 xs:w-5" /> : <ArrowLeft className="h-4 w-4 xs:h-5 xs:w-5" />}
                     </Button>
                 </div>
 
-                <div className="absolute bottom-6 left-6 z-20 flex gap-2">
-                    <Badge className={`${categoryColors[event.category] || 'bg-slate-700'} text-white border-none backdrop-blur-md px-3 py-1`}>
+                <div className="absolute bottom-3 xs:bottom-6 left-3 xs:left-6 z-20 flex gap-1 xs:gap-2 flex-wrap">
+                    <Badge className={`${categoryColors[event.category] || 'bg-slate-700'} text-white border-none backdrop-blur-md px-2 xs:px-3 py-1 text-[10px] xs:text-xs`}>
                         {event.category?.replace('_', ' & ')}
                     </Badge>
                     {event.isSponsored && (
-                        <Badge className="bg-amber-500 text-white">Sponsored</Badge>
+                        <Badge className="bg-amber-500 text-white text-[10px] xs:text-xs">Sponsored</Badge>
                     )}
                 </div>
             </div>
@@ -290,54 +290,54 @@ export const PostDetail = ({ eventId, initialEvent, isModal, onClose, className 
             {/* Right Column: Details */}
             <div className="flex-1 flex flex-col h-auto lg:h-full bg-white relative w-full lg:w-[35%] overflow-hidden lg:overflow-y-hidden">
 
-                <div className="p-4 border-b flex items-center gap-3 shrink-0 bg-white sticky top-0 z-30 w-full shadow-sm lg:shadow-none">
-                    <Avatar className="h-10 w-10 ring-1 ring-slate-100">
+                <div className="p-3 xs:p-4 border-b flex items-center gap-2 xs:gap-3 shrink-0 bg-white sticky top-0 z-30 w-full shadow-sm lg:shadow-none">
+                    <Avatar className="h-8 w-8 xs:h-10 xs:w-10 ring-1 ring-slate-100">
                         <AvatarImage src={event.organizerAvatar} />
-                        <AvatarFallback>{event.organizerName?.charAt(0)}</AvatarFallback>
+                        <AvatarFallback className="text-xs xs:text-sm">{event.organizerName?.charAt(0)}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1">
-                            <p className="text-sm font-bold truncate leading-none text-slate-900">{event.organizerName}</p>
-                            <Check className="w-3 h-3 text-white bg-blue-500 rounded-full p-[1px]" />
+                            <p className="text-xs xs:text-sm font-bold truncate leading-none text-slate-900">{event.organizerName}</p>
+                            <Check className="w-2.5 h-2.5 xs:w-3 xs:h-3 text-white bg-blue-500 rounded-full p-[1px]" />
                         </div>
-                        <p className="text-xs text-muted-foreground truncate">{event.location}</p>
+                        <p className="text-[10px] xs:text-xs text-muted-foreground truncate">{event.location}</p>
                     </div>
-                    <Button variant="ghost" size="icon" onClick={handleClose} className="hidden lg:flex text-muted-foreground hover:text-foreground">
-                        <X className="h-5 w-5" />
+                    <Button variant="ghost" size="icon" onClick={handleClose} className="hidden lg:flex text-muted-foreground hover:text-foreground h-8 w-8 xs:h-10 xs:w-10">
+                        <X className="h-4 w-4 xs:h-5 xs:w-5" />
                     </Button>
                 </div>
 
-                <div className="flex-1 overflow-visible lg:overflow-y-auto custom-scrollbar p-5 space-y-6 pb-24 lg:pb-5">
-                    <div className="space-y-3">
-                        <h1 className="text-xl font-bold leading-snug">{event.title}</h1>
-                        <p className="text-sm text-slate-800 whitespace-pre-wrap leading-relaxed">{event.description}</p>
-                        <div className="flex flex-wrap gap-2 pt-1">
+                <div className="flex-1 overflow-visible lg:overflow-y-auto custom-scrollbar p-3 xs:p-5 space-y-4 xs:space-y-6 pb-20 lg:pb-5">
+                    <div className="space-y-2 xs:space-y-3">
+                        <h1 className="text-lg xs:text-xl font-bold leading-snug">{event.title}</h1>
+                        <p className="text-xs xs:text-sm text-slate-800 whitespace-pre-wrap leading-relaxed">{event.description}</p>
+                        <div className="flex flex-wrap gap-1 xs:gap-2 pt-1">
                             {event.subCategoryTags?.map((tag: string) => (
-                                <span key={tag} className="text-blue-600 text-sm hover:underline cursor-pointer">
+                                <span key={tag} className="text-blue-600 text-xs xs:text-sm hover:underline cursor-pointer">
                                     {tag.startsWith('#') ? tag : `#${tag}`}
                                 </span>
                             ))}
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3 py-2">
-                        <div className="bg-slate-50 p-3 rounded-lg border text-center">
-                            <Calendar className="w-4 h-4 mx-auto mb-1 text-slate-400" />
-                            <p className="text-xs uppercase font-bold text-muted-foreground">Date</p>
-                            <p className="text-sm font-semibold text-slate-900">
+                    <div className="grid grid-cols-2 gap-2 xs:gap-3 py-2">
+                        <div className="bg-slate-50 p-2 xs:p-3 rounded-lg border text-center">
+                            <Calendar className="w-3 h-3 xs:w-4 xs:h-4 mx-auto mb-1 text-slate-400" />
+                            <p className="text-[10px] xs:text-xs uppercase font-bold text-muted-foreground">Date</p>
+                            <p className="text-xs xs:text-sm font-semibold text-slate-900">
                                 {new Date(event.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
                             </p>
                         </div>
-                        <div className="bg-slate-50 p-3 rounded-lg border text-center">
-                            <Briefcase className="w-4 h-4 mx-auto mb-1 text-slate-400" />
-                            <p className="text-xs uppercase font-bold text-muted-foreground">Entry</p>
-                            <p className="text-sm font-semibold text-green-600">{event.registrationFee || 'Free'}</p>
+                        <div className="bg-slate-50 p-2 xs:p-3 rounded-lg border text-center">
+                            <Briefcase className="w-3 h-3 xs:w-4 xs:h-4 mx-auto mb-1 text-slate-400" />
+                            <p className="text-[10px] xs:text-xs uppercase font-bold text-muted-foreground">Entry</p>
+                            <p className="text-xs xs:text-sm font-semibold text-green-600">{event.registrationFee || 'Free'}</p>
                         </div>
                     </div>
 
                     <div className="pt-2">
-                        <h3 className="text-xs font-bold uppercase text-muted-foreground mb-2">Location</h3>
-                        <div className="rounded-lg overflow-hidden border h-32 relative">
+                        <h3 className="text-[10px] xs:text-xs font-bold uppercase text-muted-foreground mb-2">Location</h3>
+                        <div className="rounded-lg overflow-hidden border h-24 xs:h-32 relative">
                             <EventMap location={event.location} eventName={event.title} eventDate={event.date} />
                             <div className="absolute inset-0 pointer-events-none border border-black/5 rounded-lg" />
                         </div>

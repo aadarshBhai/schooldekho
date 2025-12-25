@@ -208,22 +208,22 @@ const Dashboard = () => {
     <div className="min-h-screen">
       <Navbar />
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold">{isAdmin ? 'Admin Dashboard' : 'Organizer Dashboard'}</h1>
-          <p className="text-muted-foreground">Welcome back, {user.name}</p>
+      <main className="container mx-auto px-3 xs:px-4 sm:px-6 py-4 xs:py-6 sm:py-8">
+        <div className="mb-4 xs:mb-6">
+          <h1 className="text-xl xs:text-2xl sm:text-3xl font-bold">{isAdmin ? 'Admin Dashboard' : 'Organizer Dashboard'}</h1>
+          <p className="text-xs xs:text-sm text-muted-foreground">Welcome back, {user.name}</p>
           {isAdmin && (
-            <Badge className="mt-2 bg-gradient-to-r from-amber-500 to-orange-500">
+            <Badge className="mt-1 xs:mt-2 bg-gradient-to-r from-amber-500 to-orange-500 text-[10px] xs:text-xs">
               Admin - Posts will be marked as Sponsored
             </Badge>
           )}
         </div>
 
-        <Tabs defaultValue="create" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="create">Create Event</TabsTrigger>
-            <TabsTrigger value="posts">My Posts</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+        <Tabs defaultValue="create" className="space-y-4 xs:space-y-6">
+          <TabsList className="w-full overflow-x-auto">
+            <TabsTrigger value="create" className="text-xs xs:text-sm whitespace-nowrap">Create Event</TabsTrigger>
+            <TabsTrigger value="posts" className="text-xs xs:text-sm whitespace-nowrap">My Posts</TabsTrigger>
+            <TabsTrigger value="analytics" className="text-xs xs:text-sm whitespace-nowrap">Analytics</TabsTrigger>
           </TabsList>
 
           <TabsContent value="create">
@@ -237,25 +237,26 @@ const Dashboard = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleCreateEvent} className="space-y-8">
+                <form onSubmit={handleCreateEvent} className="space-y-6 xs:space-y-8">
                   {/* Section A: Visuals */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold flex items-center gap-2 text-primary">
-                      <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs">A</span>
-                      Visuals (The "Instagram" Element)
+                  <div className="space-y-3 xs:space-y-4">
+                    <h3 className="text-base xs:text-lg font-semibold flex items-center gap-2 text-primary">
+                      <span className="flex items-center justify-center w-5 h-5 xs:w-6 xs:h-6 rounded-full bg-primary text-white text-[10px] xs:text-xs">A</span>
+                      <span className="text-sm xs:text-base">Visuals (The "Instagram" Element)</span>
                     </h3>
 
-                    <div className="space-y-4 p-4 border rounded-lg bg-muted/20">
-                      <div className="flex justify-between items-center">
-                        <Label className="text-base font-semibold">Media Gallery ({eventForm.images.length}/6)</Label>
+                    <div className="space-y-3 xs:space-y-4 p-3 xs:p-4 border rounded-lg bg-muted/20">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0">
+                        <Label className="text-sm xs:text-base font-semibold">Media Gallery ({eventForm.images.length}/6)</Label>
                         <Button
                           type="button"
                           variant="outline"
                           size="sm"
                           disabled={eventForm.images.length >= 6 || uploading}
                           onClick={() => document.getElementById('dash-image-upload')?.click()}
+                          className="text-xs xs:text-sm"
                         >
-                          {uploading ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Plus className="w-4 h-4 mr-1" />}
+                          {uploading ? <Loader2 className="w-3 h-3 xs:w-4 xs:h-4 animate-spin mr-1" /> : <Plus className="w-3 h-3 xs:w-4 xs:h-4 mr-1" />}
                           Add Image
                         </Button>
                         <input
@@ -267,12 +268,12 @@ const Dashboard = () => {
                         />
                       </div>
 
-                      <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
                         {eventForm.images.map((img, i) => (
                           <div key={i} className="relative aspect-square rounded-md overflow-hidden border group">
                             <img src={img} alt="" className="w-full h-full object-cover" />
                             {i === 0 && (
-                              <div className="absolute bottom-0 left-0 right-0 bg-primary/80 text-[10px] text-white text-center py-0.5 font-medium">
+                              <div className="absolute bottom-0 left-0 right-0 bg-primary/80 text-[8px] xs:text-[10px] text-white text-center py-0.5 font-medium">
                                 MAIN POSTER
                               </div>
                             )}
@@ -281,23 +282,23 @@ const Dashboard = () => {
                               onClick={() => handleRemoveImage(i)}
                               className="absolute top-1 right-1 bg-destructive text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
                             >
-                              <X className="w-3 h-3" />
+                              <X className="w-2.5 h-2.5 xs:w-3 xs:h-3" />
                             </button>
                           </div>
                         ))}
                         {eventForm.images.length === 0 && (
-                          <div className="col-span-full py-4 text-center text-xs text-muted-foreground border-2 border-dashed rounded-lg">
+                          <div className="col-span-full py-3 xs:py-4 text-center text-[10px] xs:text-xs text-muted-foreground border-2 border-dashed rounded-lg">
                             Upload up to 6 images. First image will be the main cover.
                           </div>
                         )}
                       </div>
-                      <p className="text-xs-readable text-muted-foreground italic">Pro-tip: Use 1:1 or 4:5 ratio for the Main Poster for a clean feed.</p>
+                      <p className="text-[10px] xs:text-xs text-muted-foreground italic">Pro-tip: Use 1:1 or 4:5 ratio for the Main Poster for a clean feed.</p>
                     </div>
 
                     <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <Label htmlFor="teaser">Short Teaser (Catchy Headline)</Label>
-                        <span className="text-xs-readable text-muted-foreground">{eventForm.teaser.length}/150</span>
+                      <div className="flex justify-between items-center">
+                        <Label htmlFor="teaser" className="text-sm xs:text-base">Short Teaser (Catchy Headline)</Label>
+                        <span className="text-[10px] xs:text-xs text-muted-foreground">{eventForm.teaser.length}/150</span>
                       </div>
                       <Input
                         id="teaser"
@@ -306,79 +307,82 @@ const Dashboard = () => {
                         value={eventForm.teaser}
                         onChange={(e) => setEventForm({ ...eventForm, teaser: e.target.value })}
                         required
+                        className="text-xs xs:text-sm"
                       />
                     </div>
                   </div>
 
                   {/* Section B: Core Details */}
-                  <div className="space-y-4 pt-4 border-t">
-                    <h3 className="text-lg font-semibold flex items-center gap-2 text-primary">
-                      <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs">B</span>
-                      Core Details
+                  <div className="space-y-3 xs:space-y-4 pt-4 border-t">
+                    <h3 className="text-base xs:text-lg font-semibold flex items-center gap-2 text-primary">
+                      <span className="flex items-center justify-center w-5 h-5 xs:w-6 xs:h-6 rounded-full bg-primary text-white text-[10px] xs:text-xs">B</span>
+                      <span className="text-sm xs:text-base">Core Details</span>
                     </h3>
 
                     <div className="space-y-2">
-                      <Label htmlFor="title">Event Name (Full Title)</Label>
+                      <Label htmlFor="title" className="text-sm xs:text-base">Event Name (Full Title)</Label>
                       <Input
                         id="title"
                         placeholder="e.g. National Youth Science & Tech Excellence Summit"
                         value={eventForm.title}
                         onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })}
                         required
+                        className="text-xs xs:text-sm"
                       />
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="grid xs:grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="category">Category</Label>
+                        <Label htmlFor="category" className="text-sm xs:text-base">Category</Label>
                         <Select
                           value={eventForm.category}
                           onValueChange={(value) => setEventForm({ ...eventForm, category: value })}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger className="text-xs xs:text-sm">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="academic_tech">Academic & Tech</SelectItem>
-                            <SelectItem value="leadership_literary">Leadership & Literary</SelectItem>
-                            <SelectItem value="sports_fitness">Sports & Fitness</SelectItem>
-                            <SelectItem value="creative_arts">Creative Arts</SelectItem>
+                            <SelectItem value="academic_tech" className="text-xs xs:text-sm">Academic & Tech</SelectItem>
+                            <SelectItem value="leadership_literary" className="text-xs xs:text-sm">Leadership & Literary</SelectItem>
+                            <SelectItem value="sports_fitness" className="text-xs xs:text-sm">Sports & Fitness</SelectItem>
+                            <SelectItem value="creative_arts" className="text-xs xs:text-sm">Creative Arts</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="tags">Sub-Category Tags</Label>
+                        <Label htmlFor="tags" className="text-sm xs:text-base">Sub-Category Tags</Label>
                         <Input
                           id="tags"
                           placeholder="e.g. #Coding, #Football, #MUN"
                           value={eventForm.subCategoryTags}
                           onChange={(e) => setEventForm({ ...eventForm, subCategoryTags: e.target.value })}
+                          className="text-xs xs:text-sm"
                         />
                       </div>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="grid xs:grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="mode">Mode</Label>
+                        <Label htmlFor="mode" className="text-sm xs:text-base">Mode</Label>
                         <Select
                           value={eventForm.mode}
                           onValueChange={(value: any) => setEventForm({ ...eventForm, mode: value })}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger className="text-xs xs:text-sm">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="online">Online</SelectItem>
-                            <SelectItem value="offline">Offline</SelectItem>
-                            <SelectItem value="hybrid">Hybrid</SelectItem>
+                            <SelectItem value="online" className="text-xs xs:text-sm">Online</SelectItem>
+                            <SelectItem value="offline" className="text-xs xs:text-sm">Offline</SelectItem>
+                            <SelectItem value="hybrid" className="text-xs xs:text-sm">Hybrid</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
 
                       <div className="space-y-2">
-                        <Label>Eligibility</Label>
-                        <div className="flex gap-4 p-2 border rounded-md">
+                        <Label className="text-sm xs:text-base">Eligibility</Label>
+                        <div className="flex flex-wrap gap-2 xs:gap-4 p-2 border rounded-md">
                           {['9', '10', '11', '12'].map((grade) => (
                             <div key={grade} className="flex items-center space-x-2">
                               <Checkbox
@@ -391,7 +395,7 @@ const Dashboard = () => {
                                   setEventForm({ ...eventForm, eligibility: newEligibility });
                                 }}
                               />
-                              <Label htmlFor={`grade-${grade}`} className="text-sm cursor-pointer">Grade {grade}</Label>
+                              <Label htmlFor={`grade-${grade}`} className="text-xs xs:text-sm cursor-pointer">Grade {grade}</Label>
                             </div>
                           ))}
                         </div>
@@ -399,133 +403,137 @@ const Dashboard = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="entryType">Entry Type</Label>
+                      <Label htmlFor="entryType" className="text-sm xs:text-base">Entry Type</Label>
                       <Select
                         value={eventForm.entryType}
                         onValueChange={(value: any) => setEventForm({ ...eventForm, entryType: value })}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger className="text-xs xs:text-sm">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="Individual">Individual</SelectItem>
-                          <SelectItem value="Team-based">Team-based</SelectItem>
+                          <SelectItem value="Individual" className="text-xs xs:text-sm">Individual</SelectItem>
+                          <SelectItem value="Team-based" className="text-xs xs:text-sm">Team-based</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                   </div>
 
                   {/* Section C: Professional / Hiring Details (Optional) */}
-                  <div className="space-y-4 pt-4 border-t">
-                    <h3 className="text-lg font-semibold flex items-center gap-2 text-primary">
-                      <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs">C</span>
-                      Professional / Hiring (If applicable)
+                  <div className="space-y-3 xs:space-y-4 pt-4 border-t">
+                    <h3 className="text-base xs:text-lg font-semibold flex items-center gap-2 text-primary">
+                      <span className="flex items-center justify-center w-5 h-5 xs:w-6 xs:h-6 rounded-full bg-primary text-white text-[10px] xs:text-xs">C</span>
+                      <span className="text-sm xs:text-base">Professional / Hiring (If applicable)</span>
                     </h3>
 
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="grid xs:grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="subject">Subject Expertise</Label>
+                        <Label htmlFor="subject" className="text-sm xs:text-base">Subject Expertise</Label>
                         <Select
                           value={eventForm.subjectExpertise}
                           onValueChange={(value: any) => setEventForm({ ...eventForm, subjectExpertise: value })}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger className="text-xs xs:text-sm">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="NA">Not Applicable</SelectItem>
-                            <SelectItem value="Mathematics">Mathematics</SelectItem>
-                            <SelectItem value="Science">Science</SelectItem>
-                            <SelectItem value="Arts">Arts</SelectItem>
-                            <SelectItem value="Sports Coach">Sports Coach</SelectItem>
-                            <SelectItem value="Admin">Admin</SelectItem>
+                            <SelectItem value="NA" className="text-xs xs:text-sm">Not Applicable</SelectItem>
+                            <SelectItem value="Mathematics" className="text-xs xs:text-sm">Mathematics</SelectItem>
+                            <SelectItem value="Science" className="text-xs xs:text-sm">Science</SelectItem>
+                            <SelectItem value="Arts" className="text-xs xs:text-sm">Arts</SelectItem>
+                            <SelectItem value="Sports Coach" className="text-xs xs:text-sm">Sports Coach</SelectItem>
+                            <SelectItem value="Admin" className="text-xs xs:text-sm">Admin</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="experience">Experience Required</Label>
+                        <Label htmlFor="experience" className="text-sm xs:text-base">Experience Required</Label>
                         <Select
                           value={eventForm.experienceRequired}
                           onValueChange={(value: any) => setEventForm({ ...eventForm, experienceRequired: value })}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger className="text-xs xs:text-sm">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="NA">Not Applicable</SelectItem>
-                            <SelectItem value="Fresher">Fresher</SelectItem>
-                            <SelectItem value="1-3 Years">1-3 Years</SelectItem>
-                            <SelectItem value="5+ Years">5+ Years</SelectItem>
+                            <SelectItem value="NA" className="text-xs xs:text-sm">Not Applicable</SelectItem>
+                            <SelectItem value="Fresher" className="text-xs xs:text-sm">Fresher</SelectItem>
+                            <SelectItem value="1-3 Years" className="text-xs xs:text-sm">1-3 Years</SelectItem>
+                            <SelectItem value="5+ Years" className="text-xs xs:text-sm">5+ Years</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="jobType">Job Type</Label>
+                      <Label htmlFor="jobType" className="text-sm xs:text-base">Job Type</Label>
                       <Select
                         value={eventForm.jobType}
                         onValueChange={(value: any) => setEventForm({ ...eventForm, jobType: value })}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger className="text-xs xs:text-sm">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="NA">Not Applicable</SelectItem>
-                          <SelectItem value="Full-Time">Full-Time</SelectItem>
-                          <SelectItem value="Part-Time">Part-Time</SelectItem>
-                          <SelectItem value="Visiting Faculty">Visiting Faculty</SelectItem>
+                          <SelectItem value="NA" className="text-xs xs:text-sm">Not Applicable</SelectItem>
+                          <SelectItem value="Full-Time" className="text-xs xs:text-sm">Full-Time</SelectItem>
+                          <SelectItem value="Part-Time" className="text-xs xs:text-sm">Part-Time</SelectItem>
+                          <SelectItem value="Visiting Faculty" className="text-xs xs:text-sm">Visiting Faculty</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                   </div>
 
                   {/* Section D: Logistics & Trust */}
-                  <div className="space-y-4 pt-4 border-t">
-                    <h3 className="text-lg font-semibold flex items-center gap-2 text-primary">
-                      <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs">D</span>
-                      Logistics & Trust
+                  <div className="space-y-3 xs:space-y-4 pt-4 border-t">
+                    <h3 className="text-base xs:text-lg font-semibold flex items-center gap-2 text-primary">
+                      <span className="flex items-center justify-center w-5 h-5 xs:w-6 xs:h-6 rounded-full bg-primary text-white text-[10px] xs:text-xs">D</span>
+                      <span className="text-sm xs:text-base">Logistics & Trust</span>
                     </h3>
 
-                    <div className="grid md:grid-cols-3 gap-4">
+                    <div className="grid xs:grid-cols-1 sm:grid-cols-3 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="date">Date</Label>
+                        <Label htmlFor="date" className="text-sm xs:text-base">Date</Label>
                         <Input
                           id="date"
                           type="date"
                           value={eventForm.date}
                           onChange={(e) => setEventForm({ ...eventForm, date: e.target.value })}
                           required
+                          className="text-xs xs:text-sm"
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="startTime">Start Time</Label>
+                        <Label htmlFor="startTime" className="text-sm xs:text-base">Start Time</Label>
                         <Input
                           id="startTime"
                           type="time"
                           value={eventForm.startTime}
                           onChange={(e) => setEventForm({ ...eventForm, startTime: e.target.value })}
+                          className="text-xs xs:text-sm"
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="endTime">End Time</Label>
+                        <Label htmlFor="endTime" className="text-sm xs:text-base">End Time</Label>
                         <Input
                           id="endTime"
                           type="time"
                           value={eventForm.endTime}
                           onChange={(e) => setEventForm({ ...eventForm, endTime: e.target.value })}
+                          className="text-xs xs:text-sm"
                         />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="venueLink">Venue / Meeting Link</Label>
+                      <Label htmlFor="venueLink" className="text-sm xs:text-base">Venue / Meeting Link</Label>
                       <Input
                         id="venueLink"
                         placeholder={eventForm.mode === 'online' ? 'https://zoom.us/j/...' : 'Google Maps Pin or Room Number'}
                         value={eventForm.venueLink}
                         onChange={(e) => setEventForm({ ...eventForm, venueLink: e.target.value })}
+                        className="text-xs xs:text-sm"
                       />
                     </div>
 
@@ -535,53 +543,56 @@ const Dashboard = () => {
                       onValidationChange={setIsLocationValid}
                     />
 
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="grid xs:grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="fee">Registration Fee</Label>
+                        <Label htmlFor="fee" className="text-sm xs:text-base">Registration Fee</Label>
                         <Input
                           id="fee"
                           placeholder="e.g. ₹500 or Free"
                           value={eventForm.registrationFee}
                           onChange={(e) => setEventForm({ ...eventForm, registrationFee: e.target.value })}
+                          className="text-xs xs:text-sm"
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="prize">Prize Pool / Certificates</Label>
+                        <Label htmlFor="prize" className="text-sm xs:text-base">Prize Pool / Certificates</Label>
                         <Input
                           id="prize"
                           placeholder="e.g. ₹10,000 + Merit Certificates"
                           value={eventForm.prizePool}
                           onChange={(e) => setEventForm({ ...eventForm, prizePool: e.target.value })}
+                          className="text-xs xs:text-sm"
                         />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="description">Detailed Description (Rules, Schedule, Judging)</Label>
+                      <Label htmlFor="description" className="text-sm xs:text-base">Detailed Description (Rules, Schedule, Judging)</Label>
                       <Textarea
                         id="description"
                         placeholder="Use markdown for formatting..."
-                        rows={6}
+                        rows={4}
                         value={eventForm.description}
                         onChange={(e) => setEventForm({ ...eventForm, description: e.target.value })}
                         required
+                        className="text-xs xs:text-sm"
                       />
                     </div>
                   </div>
 
                   <Button
                     type="submit"
-                    className={`w-full ${isAdmin ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600' : ''}`}
+                    className={`w-full text-sm xs:text-base ${isAdmin ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600' : ''}`}
                     disabled={!isLocationValid || loading || uploading}
                   >
                     {loading ? (
-                      <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating...</>
+                      <><Loader2 className="mr-2 h-3 w-3 xs:h-4 xs:w-4 animate-spin" /> Creating...</>
                     ) : (
                       isAdmin ? 'Create Sponsored Post' : 'Create Event'
                     )}
                   </Button>
                   {!isLocationValid && eventForm.location && (
-                    <p className="text-xs-readable text-destructive text-center font-medium">
+                    <p className="text-[10px] xs:text-xs text-destructive text-center font-medium">
                       Please enter a valid location to create the event
                     </p>
                   )}

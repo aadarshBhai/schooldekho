@@ -131,22 +131,22 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-2xl font-bold">
+    <div className="min-h-screen flex items-center justify-center p-3 xs:p-4 sm:p-6 bg-gradient-to-br from-primary/5 to-accent/5">
+      <Card className="w-full max-w-md border-0 shadow-xl sm:shadow-2xl">
+        <CardHeader className="text-center p-6 xs:p-8">
+          <div className="w-12 h-12 xs:w-16 xs:h-16 mx-auto mb-3 xs:mb-4 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-lg xs:text-2xl font-bold">
             E
           </div>
-          <CardTitle className="text-2xl">Join EventDekho</CardTitle>
-          <CardDescription>Create your account and start connecting</CardDescription>
+          <CardTitle className="text-xl xs:text-2xl">Join EventDekho</CardTitle>
+          <CardDescription className="text-sm xs:text-base">Create your account and start connecting</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="p-6 xs:p-8 pt-0 space-y-4">
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* User Type Selection */}
             <div className="space-y-2">
-              <Label>I am a</Label>
+              <Label className="text-sm font-medium">I am a</Label>
               <Select value={userType} onValueChange={(value: 'student' | 'parent' | 'organizer') => setUserType(value)}>
-                <SelectTrigger>
+                <SelectTrigger className="h-10 xs:h-11">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -162,41 +162,44 @@ const Signup = () => {
               <div className="space-y-6 pt-4 border-t">
                 {/* Section A: Basic Identity */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold flex items-center gap-2 text-primary">
-                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs">A</span>
+                  <h3 className="text-base xs:text-lg font-semibold flex items-center gap-2 text-primary">
+                    <span className="flex items-center justify-center w-5 h-5 xs:w-6 xs:h-6 rounded-full bg-primary text-white text-[10px] xs:text-xs">A</span>
                     Basic Identity
                   </h3>
 
                   <div className="space-y-2">
-                    <Label htmlFor="name">Full Name (As per school records)</Label>
+                    <Label htmlFor="name" className="text-sm font-medium">Full Name (As per school records)</Label>
                     <Input
                       id="name"
                       placeholder="John Doe"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="h-10 xs:h-11"
                       required
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 xs:gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="phone">Mobile Number (For OTP)</Label>
+                      <Label htmlFor="phone" className="text-sm font-medium">Mobile Number (For OTP)</Label>
                       <Input
                         id="phone"
                         placeholder="+91 9876543210"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        className="h-10 xs:h-11"
                         required
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="email">Email Address</Label>
+                      <Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
                       <Input
                         id="email"
                         type="email"
                         placeholder="your@email.com"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        className="h-10 xs:h-11"
                         required
                       />
                     </div>
@@ -205,38 +208,40 @@ const Signup = () => {
 
                 {/* Section B: Educational Context */}
                 <div className="space-y-4 pt-4 border-t">
-                  <h3 className="text-lg font-semibold flex items-center gap-2 text-primary">
-                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs">B</span>
+                  <h3 className="text-base xs:text-lg font-semibold flex items-center gap-2 text-primary">
+                    <span className="flex items-center justify-center w-5 h-5 xs:w-6 xs:h-6 rounded-full bg-primary text-white text-[10px] xs:text-xs">B</span>
                     Educational Context
                   </h3>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 xs:gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="schoolName">School Name</Label>
+                      <Label htmlFor="schoolName" className="text-sm font-medium">School Name</Label>
                       <Input
                         id="schoolName"
                         placeholder="Green Valley High"
                         value={formData.schoolName}
                         onChange={(e) => setFormData({ ...formData, schoolName: e.target.value })}
+                        className="h-10 xs:h-11"
                         required
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="city">City</Label>
+                      <Label htmlFor="city" className="text-sm font-medium">City</Label>
                       <Input
                         id="city"
                         placeholder="Mumbai"
                         value={formData.city}
                         onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                        className="h-10 xs:h-11"
                         required
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="grade">Grade / Class</Label>
+                    <Label htmlFor="grade" className="text-sm font-medium">Grade / Class</Label>
                     <Select value={formData.grade} onValueChange={(value: any) => setFormData({ ...formData, grade: value })}>
-                      <SelectTrigger>
+                      <SelectTrigger className="h-10 xs:h-11">
                         <SelectValue placeholder="Select Grade" />
                       </SelectTrigger>
                       <SelectContent>
@@ -249,8 +254,8 @@ const Signup = () => {
                   </div>
 
                   <div className="space-y-3">
-                    <Label>Stream / Interests (Select Categories)</Label>
-                    <div className="grid grid-cols-2 gap-3 p-3 border rounded-lg bg-muted/20">
+                    <Label className="text-sm font-medium">Stream / Interests (Select Categories)</Label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 xs:gap-3 p-3 border rounded-lg bg-muted/20">
                       {[
                         { id: 'academic_tech', label: 'Academic & Tech' },
                         { id: 'leadership_literary', label: 'Leadership & Literary' },
@@ -268,25 +273,25 @@ const Signup = () => {
                               setFormData({ ...formData, interests: newInterests });
                             }}
                           />
-                          <label htmlFor={interest.id} className="text-sm font-medium leading-none cursor-pointer">
+                          <label htmlFor={interest.id} className="text-xs xs:text-sm font-medium leading-none cursor-pointer">
                             {interest.label}
                           </label>
                         </div>
                       ))}
                     </div>
-                    <p className="text-xs-readable text-muted-foreground italic">Helps power personalized discovery feature.</p>
+                    <p className="text-[10px] xs:text-xs text-muted-foreground italic">Helps power personalized discovery feature.</p>
                   </div>
                 </div>
 
                 {/* Section C: Security & Consent */}
                 <div className="space-y-4 pt-4 border-t">
-                  <h3 className="text-lg font-semibold flex items-center gap-2 text-primary">
-                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs">C</span>
+                  <h3 className="text-base xs:text-lg font-semibold flex items-center gap-2 text-primary">
+                    <span className="flex items-center justify-center w-5 h-5 xs:w-6 xs:h-6 rounded-full bg-primary text-white text-[10px] xs:text-xs">C</span>
                     Security & Consent
                   </h3>
 
                   <div className="space-y-2">
-                    <Label htmlFor="password">Password (Min 8 characters)</Label>
+                    <Label htmlFor="password" className="text-sm font-medium">Password (Min 8 characters)</Label>
                     <div className="relative">
                       <Input
                         id="password"
@@ -294,13 +299,13 @@ const Signup = () => {
                         placeholder="••••••••"
                         value={formData.password}
                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                        className="pr-10"
+                        className="pr-10 h-10 xs:h-11"
                         required
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                         tabIndex={-1}
                       >
                         {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -316,10 +321,10 @@ const Signup = () => {
                         onCheckedChange={(checked) => setFormData({ ...formData, parentalConsent: !!checked })}
                       />
                       <div className="grid gap-1.5 leading-none">
-                        <label htmlFor="parentalConsent" className="text-sm font-medium cursor-pointer">
+                        <label htmlFor="parentalConsent" className="text-xs xs:text-sm font-medium cursor-pointer">
                           Parental Consent
                         </label>
-                        <p className="text-small-readable text-muted-foreground">
+                        <p className="text-[10px] xs:text-xs text-muted-foreground">
                           I confirm that my parent/guardian is aware of this registration.
                         </p>
                       </div>
@@ -328,25 +333,27 @@ const Signup = () => {
 
                   {userType === 'parent' && (
                     <div className="space-y-2 p-3 border rounded-lg bg-primary/5">
-                      <Label htmlFor="childPhone">Student Link</Label>
+                      <Label htmlFor="childPhone" className="text-sm font-medium">Student Link</Label>
                       <Input
                         id="childPhone"
                         placeholder="Enter your child's mobile number"
                         value={formData.childPhone}
                         onChange={(e) => setFormData({ ...formData, childPhone: e.target.value })}
+                        className="h-10 xs:h-11"
                       />
-                      <p className="text-xs-readable text-muted-foreground italic">Link accounts to stay updated with your child's interests.</p>
+                      <p className="text-[10px] xs:text-xs text-muted-foreground italic">Link accounts to stay updated with your child's interests.</p>
                     </div>
                   )}
 
                   <div className="space-y-2">
-                    <Label htmlFor="bio">About You (Optional)</Label>
+                    <Label htmlFor="bio" className="text-sm font-medium">About You (Optional)</Label>
                     <Textarea
                       id="bio"
                       placeholder="Short bio..."
                       value={formData.bio}
                       onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                       rows={2}
+                      className="resize-none"
                     />
                   </div>
                 </div>
@@ -357,30 +364,32 @@ const Signup = () => {
             {userType === 'organizer' && (
               <>
                 <div className="space-y-2">
-                  <Label htmlFor="name">Organization Name</Label>
+                  <Label htmlFor="name" className="text-sm font-medium">Organization Name</Label>
                   <Input
                     id="name"
                     placeholder="Green Valley School"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="h-10 xs:h-11"
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email" className="text-sm font-medium">Email</Label>
                   <Input
                     id="email"
                     type="email"
                     placeholder="your@email.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="h-10 xs:h-11"
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password" className="text-sm font-medium">Password</Label>
                   <div className="relative">
                     <Input
                       id="password"
@@ -388,13 +397,13 @@ const Signup = () => {
                       placeholder="••••••••"
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      className="pr-10"
+                      className="pr-10 h-10 xs:h-11"
                       required
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                       tabIndex={-1}
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -409,63 +418,67 @@ const Signup = () => {
               <div className="space-y-6 pt-4 border-t">
                 {/* Section A: Professional Identity */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold flex items-center gap-2 text-primary">
-                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs">A</span>
+                  <h3 className="text-base xs:text-lg font-semibold flex items-center gap-2 text-primary">
+                    <span className="flex items-center justify-center w-5 h-5 xs:w-6 xs:h-6 rounded-full bg-primary text-white text-[10px] xs:text-xs">A</span>
                     Professional Identity
                   </h3>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 xs:gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="designation">Official Designation</Label>
+                      <Label htmlFor="designation" className="text-sm font-medium">Official Designation</Label>
                       <Input
                         id="designation"
                         placeholder="e.g. Activity Coordinator"
                         value={formData.designation}
                         onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
+                        className="h-10 xs:h-11"
                         required
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="phone">Personal Phone (WhatsApp)</Label>
+                      <Label htmlFor="phone" className="text-sm font-medium">Personal Phone (WhatsApp)</Label>
                       <Input
                         id="phone"
                         placeholder="+91 9876543210"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        className="h-10 xs:h-11"
                         required
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="schoolName">School / Organization Name</Label>
+                    <Label htmlFor="schoolName" className="text-sm font-medium">School / Organization Name</Label>
                     <Input
                       id="schoolName"
                       placeholder="Enter full official name"
                       value={formData.schoolName}
                       onChange={(e) => setFormData({ ...formData, schoolName: e.target.value })}
+                      className="h-10 xs:h-11"
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="schoolAddress">School Address / City</Label>
+                    <Label htmlFor="schoolAddress" className="text-sm font-medium">School Address / City</Label>
                     <Input
                       id="schoolAddress"
                       placeholder="e.g. Bandra West, Mumbai"
                       value={formData.schoolAddress}
                       onChange={(e) => setFormData({ ...formData, schoolAddress: e.target.value })}
+                      className="h-10 xs:h-11"
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Verification Upload (ID Card / Letter)</Label>
-                    <div className="flex items-center gap-4">
+                    <Label className="text-sm font-medium">Verification Upload (ID Card / Letter)</Label>
+                    <div className="flex items-center gap-3 xs:gap-4">
                       <Button
                         type="button"
                         variant="outline"
-                        className="w-full relative"
+                        className="w-full relative h-10 xs:h-11 text-xs xs:text-sm"
                         disabled={uploading}
                         onClick={() => document.getElementById('verification-upload')?.click()}
                       >
@@ -479,59 +492,63 @@ const Signup = () => {
                         accept=".jpg,.jpeg,.png,.pdf"
                       />
                       {formData.verificationFile && (
-                        <div className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded border border-green-200">
+                        <div className="text-[10px] xs:text-xs text-green-600 bg-green-50 px-2 py-1 rounded border border-green-200">
                           Uploaded ✓
                         </div>
                       )}
                     </div>
-                    <p className="text-xs-readable text-muted-foreground">Upload School ID or Authorization Letter signed by Principal.</p>
+                    <p className="text-[10px] xs:text-xs text-muted-foreground">Upload School ID or Authorization Letter signed by Principal.</p>
                   </div>
                 </div>
 
                 {/* Section B: Institutional Profile */}
                 <div className="space-y-4 pt-4 border-t">
-                  <h3 className="text-lg font-semibold flex items-center gap-2 text-primary">
-                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs">B</span>
+                  <h3 className="text-base xs:text-lg font-semibold flex items-center gap-2 text-primary">
+                    <span className="flex items-center justify-center w-5 h-5 xs:w-6 xs:h-6 rounded-full bg-primary text-white text-[10px] xs:text-xs">B</span>
                     Institutional Profile
                   </h3>
 
                   <div className="space-y-2">
-                    <Label htmlFor="website">School Website URL</Label>
+                    <Label htmlFor="website" className="text-sm font-medium">School Website URL</Label>
                     <Input
                       id="website"
                       placeholder="https://www.school.com"
                       value={formData.website}
                       onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                      className="h-10 xs:h-11"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="principalName">Principal's Name</Label>
+                    <Label htmlFor="principalName" className="text-sm font-medium">Principal's Name</Label>
                     <Input
                       id="principalName"
                       placeholder="Enter Principal's full name"
                       value={formData.principalName}
                       onChange={(e) => setFormData({ ...formData, principalName: e.target.value })}
+                      className="h-10 xs:h-11"
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 xs:gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="instagram">Instagram link</Label>
+                      <Label htmlFor="instagram" className="text-sm font-medium">Instagram link</Label>
                       <Input
                         id="instagram"
                         placeholder="instagram.com/school"
                         value={formData.instagram}
                         onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
+                        className="h-10 xs:h-11"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="facebook">Facebook link</Label>
+                      <Label htmlFor="facebook" className="text-sm font-medium">Facebook link</Label>
                       <Input
                         id="facebook"
                         placeholder="facebook.com/school"
                         value={formData.facebook}
                         onChange={(e) => setFormData({ ...formData, facebook: e.target.value })}
+                        className="h-10 xs:h-11"
                       />
                     </div>
                   </div>
@@ -539,20 +556,20 @@ const Signup = () => {
 
                 {/* Section C: Account Preferences */}
                 <div className="space-y-4 pt-4 border-t">
-                  <h3 className="text-lg font-semibold flex items-center gap-2 text-primary">
-                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs">C</span>
+                  <h3 className="text-base xs:text-lg font-semibold flex items-center gap-2 text-primary">
+                    <span className="flex items-center justify-center w-5 h-5 xs:w-6 xs:h-6 rounded-full bg-primary text-white text-[10px] xs:text-xs">C</span>
                     Account Preferences
                   </h3>
 
                   <div className="space-y-2">
-                    <Label>Preferred Communication</Label>
+                    <Label className="text-sm font-medium">Preferred Communication</Label>
                     <Select
                       value={formData.preferredCommunication}
                       onValueChange={(value: 'whatsapp' | 'email') =>
                         setFormData({ ...formData, preferredCommunication: value })
                       }
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="h-10 xs:h-11">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -563,26 +580,27 @@ const Signup = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="bio">User Bio</Label>
+                    <Label htmlFor="bio" className="text-sm font-medium">User Bio</Label>
                     <Textarea
                       id="bio"
                       placeholder="Tell us why you are using EventDekho..."
                       value={formData.bio}
                       onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                       rows={3}
+                      className="resize-none"
                     />
                   </div>
                 </div>
               </div>
             )}
 
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full h-10 xs:h-11 text-sm xs:text-base font-medium" disabled={loading}>
               {loading ? 'Creating Account...' : 'Sign Up'}
             </Button>
           </form>
 
           <div className="text-center">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs xs:text-sm text-muted-foreground">
               Already have an account?{' '}
               <Link to="/login" className="text-primary hover:underline font-medium">
                 Login
@@ -591,7 +609,7 @@ const Signup = () => {
           </div>
 
           {userType === 'organizer' && (
-            <div className="p-4 bg-secondary/50 rounded-lg text-small-readable text-muted-foreground">
+            <div className="p-3 xs:p-4 bg-secondary/50 rounded-lg text-[10px] xs:text-xs text-muted-foreground">
               Note: Organizer accounts require admin verification before you can create events.
             </div>
           )}

@@ -49,14 +49,11 @@ export const FeedCard = ({ event, onEventClick }: FeedCardProps) => {
     const wasLiked = isLiked;
     const prevLikes = likes;
     setIsLiked(!wasLiked);
-    setLikes(wasLiked ? prevLikes - 1 : prevLikes + 1);
+    setLikes(prevLikes + (wasLiked ? -1 : 1));
     setIsLiking(true);
 
     try {
-      const result = await likeEvent(event.id, user.id);
-      setIsLiked(result.liked);
-      setLikes(result.likes);
-      toast.success(result.liked ? 'Post liked!' : 'Like removed');
+      await likeEvent(event.id, user.id);
     } catch (error) {
       // Rollback on error
       setIsLiked(wasLiked);
@@ -67,204 +64,210 @@ export const FeedCard = ({ event, onEventClick }: FeedCardProps) => {
     }
   };
 
-  const handleComment = () => {
-    // If onEventClick provided, open modal. Else, let link handling work or toast.
-    if (onEventClick) {
-      onEventClick(event);
-    } else if (!user) {
-      toast.error('Please login to comment');
-      return;
-    }
-  };
-
   const handleShare = async () => {
-    // Copy link to clipboard
-    const url = `${window.location.origin}/post/${event.id}`;
     try {
-      await navigator.clipboard.writeText(url);
-      toast.success('Link copied to clipboard!');
-
-      // Increment share count in backend
-      const result = await shareEvent(event.id);
-      setShares(result.shares);
+      await shareEvent(event.id);
+      setShares(prev => prev + 1);
+      toast.success('Event shared successfully!');
     } catch (error) {
-      toast.error('Failed to copy link');
+      toast.error('Failed to share post');
     }
   };
 
-  const categoryColors = {
-    school: 'bg-blue-500',
-    ngo: 'bg-green-500',
-    community: 'bg-purple-500',
-    festival: 'bg-orange-500',
-  };
-
-  const handleCardClick = (e: React.MouseEvent) => {
+  const handleCardClick = () => {
     if (onEventClick) {
-      e.preventDefault();
       onEventClick(event);
     }
   };
 
   return (
-    <Card className={`feed-card-shadow transition-smooth overflow-hidden ${event.isSponsored ? 'ring-1 ring-amber-500/30' : ''}`}>
-      {/* Sponsored Banner */}
-      {event.isSponsored && (
-        <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 px-4 py-2 flex items-center gap-2 border-b border-amber-500/20">
-          <Megaphone className="h-4 w-4 text-amber-600" />
-          <span className="text-xs font-medium text-amber-700 dark:text-amber-400">Sponsored</span>
-        </div>
-      )}
-
+    <Card className={`feed-card-shadow transition-all duration-300 overflow-hidden hover:shadow-2xl hover:scale-[1.02] cursor-pointer group max-w-2xl mx-auto ${event.isSponsored ? 'ring-1 ring-amber-500/30' : ''}`}>
       {/* Header */}
-      <div className="p-4 flex items-center gap-3">
-        {event.organizerId === 'admin-env' ? (
-          <Avatar className={event.isSponsored ? 'ring-2 ring-amber-500' : ''}>
-            <AvatarImage src={event.organizerAvatar} />
-            <AvatarFallback>{event.organizerName.charAt(0)}</AvatarFallback>
-          </Avatar>
-        ) : (
-          <Link to={`/profile/${event.organizerId}`}>
-            <Avatar className={event.isSponsored ? 'ring-2 ring-amber-500' : ''}>
-              <AvatarImage src={event.organizerAvatar} />
-              <AvatarFallback>{event.organizerName.charAt(0)}</AvatarFallback>
-            </Avatar>
-          </Link>
-        )}
-        <div className="flex-1">
-          <div className="flex items-center gap-2">
-            <p className="font-semibold text-sm">{event.organizerName}</p>
+      <div className="p-4 xs:p-5 sm:p-6 flex items-center gap-3 xs:gap-4">
+        <Avatar className="h-10 w-10 xs:h-12 xs:w-12 sm:h-14 sm:w-14 group-hover:scale-110 transition-transform duration-200">
+          <AvatarImage src={event.organizerAvatar} alt={event.organizerName} />
+          <AvatarFallback className="text-xs xs:text-sm sm:text-base">{event.organizerName.charAt(0)}</AvatarFallback>
+        </Avatar>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-2">
+            <h3 className="font-semibold text-sm xs:text-base sm:text-lg truncate">{event.organizerName}</h3>
             {event.isSponsored && (
-              <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 border-amber-500 text-amber-600">
-                Ad
+              <Badge variant="secondary" className="hidden xs:flex items-center gap-1 text-[10px] xs:text-xs px-2 py-1 bg-amber-100 text-amber-800 border-amber-200">
+                <Megaphone className="w-3 h-3" />
+                Sponsored
               </Badge>
             )}
           </div>
-          <p className="text-xs text-small-readable">
-            {event.isSponsored ? 'Promoted' : new Date(event.createdAt).toLocaleDateString()}
-          </p>
+          <div className="flex items-center gap-2 text-xs xs:text-sm sm:text-sm text-muted-foreground">
+            <MapPin className="h-3 w-3 flex-shrink-0" />
+            <span className="truncate">{event.location}</span>
+            <span className="hidden sm:inline">•</span>
+            <Calendar className="h-3 w-3 flex-shrink-0 hidden sm:inline" />
+            <span className="hidden sm:inline truncate">{new Date(event.date).toLocaleDateString()}</span>
+          </div>
         </div>
-        <Badge variant="secondary" className={`${categoryColors[event.category]} text-white`}>
-          {event.category}
-        </Badge>
+        {event.isSponsored && (
+          <Badge variant="secondary" className="xs:hidden flex items-center gap-1 text-[10px] px-2 py-1 bg-amber-100 text-amber-800 border-amber-200">
+            <Megaphone className="w-3 h-3" />
+          </Badge>
+        )}
       </div>
 
-      {/* Media */}
-      <div onClick={handleCardClick} className="cursor-pointer">
-        <div className="relative aspect-square overflow-hidden bg-muted">
-          {event.mediaType === 'video' ? (
-            <>
-              {event.image ? (
-                <img
-                  src={event.image}
-                  alt={`${event.title}`}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                  loading="lazy"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-black/10">
-                  <Play className="h-12 w-12 text-muted-foreground" />
-                </div>
-              )}
-              <div className="absolute inset-0 bg-black/20 flex items-center justify-center pointer-events-none">
-                <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
-                  <Play className="h-8 w-8 text-primary ml-1" fill="currentColor" />
-                </div>
-              </div>
-            </>
-          ) : (
-            <img
-              src={event.image || '/placeholder.svg'}
-              alt={`${event.title}`}
-              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-              loading="lazy"
-              onError={(e) => {
-                e.currentTarget.src = 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&auto=format&fit=crop';
-              }}
-            />
+      {/* Media Section */}
+      <div className="relative aspect-[4/3] xs:aspect-[16/9] sm:aspect-[3/2] bg-muted overflow-hidden group">
+        {event.mediaType === 'video' ? (
+          <>
+            <video
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              poster={event.image}
+              onClick={handleCardClick}
+            >
+              <source src={event.video} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+            <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <Play className="h-12 w-12 xs:h-16 xs:w-16 text-white drop-shadow-lg" />
+            </div>
+          </>
+        ) : (
+          <div 
+            className="w-full h-full overflow-hidden cursor-pointer"
+            onClick={handleCardClick}
+          >
+            {event.images && event.images.length > 0 ? (
+              <img
+                src={event.images[0]}
+                alt={event.title}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+            ) : (
+              <img
+                src={event.image}
+                alt={event.title}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+            )}
+          </div>
+        )}
+        
+        {/* Category Badge Overlay */}
+        <div className="absolute top-3 left-3">
+          <Badge variant="secondary" className="text-[10px] xs:text-xs sm:text-sm bg-black/70 text-white backdrop-blur-sm border-none px-2 py-1">
+            {event.category.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+          </Badge>
+        </div>
+        
+        {/* Mode Badge */}
+        {event.mode && (
+          <div className="absolute top-3 right-3">
+            <Badge variant="outline" className="text-[10px] xs:text-xs sm:text-sm bg-white/90 backdrop-blur-sm border-white/20">
+              {event.mode}
+            </Badge>
+          </div>
+        )}
+      </div>
+
+      <CardContent className="p-4 xs:p-5 sm:p-6 space-y-3 xs:space-y-4">
+        {/* Event Title */}
+        <h2 
+          className="font-bold text-lg xs:text-xl sm:text-2xl mb-2 cursor-pointer hover:text-primary transition-colors line-clamp-2 leading-tight"
+          onClick={handleCardClick}
+        >
+          {event.title}
+        </h2>
+
+        {/* Event Description */}
+        <p 
+          className="text-sm xs:text-base sm:text-lg text-muted-foreground line-clamp-2 xs:line-clamp-3 leading-relaxed cursor-pointer"
+          onClick={handleCardClick}
+        >
+          {event.teaser || event.description}
+        </p>
+
+        {/* Event Details */}
+        <div className="flex flex-wrap items-center gap-3 xs:gap-4 text-xs xs:text-sm sm:text-base text-muted-foreground">
+          <div className="flex items-center gap-1">
+            <Calendar className="h-3 w-3 xs:h-4 xs:w-4" />
+            <span>{new Date(event.date).toLocaleDateString()}</span>
+          </div>
+          {event.registrationFee && (
+            <div className="flex items-center gap-1">
+              <span className="font-medium">{event.registrationFee}</span>
+            </div>
+          )}
+          {event.mode && (
+            <Badge variant="outline" className="text-[10px] xs:text-xs">
+              {event.mode}
+            </Badge>
           )}
         </div>
-      </div>
 
-      {/* Content */}
-      <CardContent className="p-4 space-y-3">
-        {/* Actions */}
-        <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="gap-2 p-2 h-auto hover:bg-accent/50 transition-colors cursor-pointer"
-            onClick={handleLike}
-            aria-label={isLiked ? "Unlike post" : "Like post"}
-          >
-            <Heart
-              className={`h-6 w-6 transition-all ${isLiked ? 'fill-red-500 text-red-500 scale-110' : 'text-foreground hover:text-red-500'
-                }`}
-            />
-            <span className="text-sm font-medium">{likes}</span>
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="gap-2 p-2 h-auto hover:bg-accent/50 transition-colors cursor-pointer"
-            onClick={handleComment}
-            aria-label="View comments"
-          >
-            <MessageCircle className="h-6 w-6 hover:text-blue-500 transition-colors" />
-            <span className="text-sm font-medium">{event.comments}</span>
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="gap-2 p-2 h-auto hover:bg-accent/50 transition-colors cursor-pointer"
-            onClick={handleShare}
-            aria-label="Share post"
-          >
-            <Share2 className="h-6 w-6 hover:text-green-500 transition-colors" />
-            <span className="text-sm font-medium">{shares}</span>
-          </Button>
-        </div>
-
-        {/* Title & Description */}
-        <div>
-          <h2 className="font-bold text-lg mb-1 cursor-pointer hover:text-primary transition-colors" onClick={handleCardClick}>
-            {event.title}
-          </h2>
-          <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">{event.description}</p>
-        </div>
-
-        {/* Location & Date */}
-        <div className="flex items-center gap-4 text-sm text-small-readable">
-          <div className="flex items-center gap-1">
-            <MapPin className="h-4 w-4" />
-            <span className="font-medium">{event.location}</span>
+        {/* Tags */}
+        {event.subCategoryTags && event.subCategoryTags.length > 0 && (
+          <div className="flex flex-wrap gap-1 xs:gap-2">
+            {event.subCategoryTags.slice(0, 3).map((tag, index) => (
+              <Badge key={index} variant="secondary" className="text-[10px] xs:text-xs px-2 py-1">
+                #{tag}
+              </Badge>
+            ))}
+            {event.subCategoryTags.length > 3 && (
+              <Badge variant="secondary" className="text-[10px] xs:text-xs px-2 py-1">
+                +{event.subCategoryTags.length - 3}
+              </Badge>
+            )}
           </div>
-          <div className="flex items-center gap-1">
-            <Calendar className="h-4 w-4" />
-            <span className="font-medium">{new Date(event.date).toLocaleDateString()}</span>
-          </div>
-        </div>
+        )}
 
-        {/* CTA Button */}
-        <Button
-          className="w-full"
-          variant="default"
-          onClick={() => {
-            if (!user) {
-              toast.error('Please login to participate');
-              return;
-            }
-            setShowParticipationDialog(true);
-          }}
-        >
-          I'm Interested
-        </Button>
+        {/* Action Buttons */}
+        <div className="flex items-center justify-between pt-2 xs:pt-3 border-t">
+          <div className="flex items-center gap-2 xs:gap-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`flex items-center gap-1 xs:gap-2 text-xs xs:text-sm sm:text-base transition-all duration-200 hover:scale-110 ${isLiked ? 'text-red-500' : 'text-muted-foreground hover:text-red-500'}`}
+              onClick={handleLike}
+              disabled={isLiking}
+            >
+              <Heart className={`h-4 w-4 xs:h-5 xs:w-5 sm:h-6 sm:w-6 ${isLiked ? 'fill-current' : ''}`} />
+              <span className="font-medium">{likes}</span>
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="sm"
+              className="flex items-center gap-1 xs:gap-2 text-xs xs:text-sm sm:text-base text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110"
+              onClick={handleCardClick}
+            >
+              <MessageCircle className="h-4 w-4 xs:h-5 xs:w-5 sm:h-6 sm:w-6" />
+              <span className="font-medium">{event.comments}</span>
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="sm"
+              className="flex items-center gap-1 xs:gap-2 text-xs xs:text-sm sm:text-base text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110"
+              onClick={handleShare}
+            >
+              <Share2 className="h-4 w-4 xs:h-5 xs:w-5 sm:h-6 sm:w-6" />
+              <span className="font-medium">{shares}</span>
+            </Button>
+          </div>
+
+          <Button
+            size="sm"
+            className="text-xs xs:text-sm sm:text-base px-3 xs:px-4 sm:px-6 py-2 xs:py-2.5 sm:py-3 transition-all duration-200 hover:scale-105"
+            onClick={() => setShowParticipationDialog(true)}
+          >
+            Participate
+          </Button>
+        </div>
       </CardContent>
 
+      {/* Participation Dialog */}
       <ParticipationDialog
-        event={event}
         open={showParticipationDialog}
         onOpenChange={setShowParticipationDialog}
+        event={event}
       />
     </Card>
   );

@@ -158,7 +158,7 @@ const Profile = () => {
       <div className="min-h-screen pb-20 md:pb-0 bg-background">
         <Navbar />
 
-        <main className="container mx-auto px-4 py-6 max-w-4xl">
+        <main className="container mx-auto px-3 xs:px-4 sm:px-6 py-4 xs:py-6 sm:py-8 max-w-4xl lg:max-w-5xl xl:max-w-6xl">
           {/* Profile Header - Instagram Style */}
           <div className="bg-card rounded-2xl p-6 mb-6 feed-card-shadow">
             {/* Mobile Layout */}
@@ -351,25 +351,69 @@ const Profile = () => {
 
             <TabsContent value="posts" className="mt-4">
               {userEvents.length > 0 ? (
-                <div className="grid grid-cols-3 gap-1 md:gap-4">
+                <div className="space-y-4 max-w-2xl mx-auto">
                   {userEvents.map(event => (
                     <div
                       key={event.id}
-                      className="aspect-square rounded-sm md:rounded-lg overflow-hidden cursor-pointer group relative"
+                      className="bg-card rounded-2xl overflow-hidden border border-border feed-card-shadow hover:shadow-lg transition-all duration-300 cursor-pointer"
                       onClick={() => navigate(`/post/${event.id}`)}
                     >
-                      <img
-                        src={event.image}
-                        alt={event.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                        <div className="flex items-center gap-4 text-white">
-                          <span className="flex items-center gap-1">
-                            <Heart className="h-5 w-5 fill-white" />
+                      {/* Event Image */}
+                      <div className="aspect-video sm:aspect-square md:aspect-video lg:aspect-square relative overflow-hidden">
+                        <img
+                          src={event.image}
+                          alt={event.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
+                        />
+                        {event.isSponsored && (
+                          <div className="absolute top-3 left-3">
+                            <Badge className="bg-amber-500 text-white text-xs px-2 py-1">
+                              Sponsored
+                            </Badge>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Event Content */}
+                      <div className="p-4 sm:p-6">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary/20 to-primary/10 flex items-center justify-center">
+                              <span className="text-primary font-bold text-sm">
+                                {displayedUser.name.charAt(0).toUpperCase()}
+                              </span>
+                            </div>
+                            <div>
+                              <p className="font-semibold text-sm">{displayedUser.name}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {new Date(event.createdAt).toLocaleDateString()}
+                              </p>
+                            </div>
+                          </div>
+                          <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                            <Heart className="h-4 w-4 mr-1" />
                             {event.likes}
-                          </span>
+                          </Button>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <h3 className="font-bold text-base sm:text-lg line-clamp-2">
+                            {event.title}
+                          </h3>
+                          <p className="text-sm text-muted-foreground line-clamp-3">
+                            {event.description}
+                          </p>
+                          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                            <span className="flex items-center gap-1">
+                              <MapPin className="h-3 w-3" />
+                              {event.location}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Calendar className="h-3 w-3" />
+                              {new Date(event.date).toLocaleDateString()}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -391,21 +435,68 @@ const Profile = () => {
 
             <TabsContent value="saved" className="mt-4">
               {savedEvents.length > 0 ? (
-                <div className="grid grid-cols-3 gap-1 md:gap-4">
+                <div className="space-y-4 max-w-2xl mx-auto">
                   {savedEvents.map(event => (
                     <div
                       key={event.id}
-                      className="aspect-square rounded-sm md:rounded-lg overflow-hidden cursor-pointer group relative"
+                      className="bg-card rounded-2xl overflow-hidden border border-border feed-card-shadow hover:shadow-lg transition-all duration-300 cursor-pointer"
                       onClick={() => navigate(`/post/${event.id}`)}
                     >
-                      <img
-                        src={event.image}
-                        alt={event.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                        <Bookmark className="h-6 w-6 text-white fill-white" />
+                      {/* Event Image */}
+                      <div className="aspect-video sm:aspect-square md:aspect-video lg:aspect-square relative overflow-hidden">
+                        <img
+                          src={event.image}
+                          alt={event.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
+                        />
+                        <div className="absolute top-3 right-3">
+                          <div className="bg-black/50 backdrop-blur-sm rounded-full p-2">
+                            <Bookmark className="h-4 w-4 text-white fill-white" />
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Event Content */}
+                      <div className="p-4 sm:p-6">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary/20 to-primary/10 flex items-center justify-center">
+                              <span className="text-primary font-bold text-sm">
+                                {event.organizerName.charAt(0).toUpperCase()}
+                              </span>
+                            </div>
+                            <div>
+                              <p className="font-semibold text-sm">{event.organizerName}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {new Date(event.createdAt).toLocaleDateString()}
+                              </p>
+                            </div>
+                          </div>
+                          <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                            <Heart className="h-4 w-4 mr-1" />
+                            {event.likes}
+                          </Button>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <h3 className="font-bold text-base sm:text-lg line-clamp-2">
+                            {event.title}
+                          </h3>
+                          <p className="text-sm text-muted-foreground line-clamp-3">
+                            {event.description}
+                          </p>
+                          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                            <span className="flex items-center gap-1">
+                              <MapPin className="h-3 w-3" />
+                              {event.location}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Calendar className="h-3 w-3" />
+                              {new Date(event.date).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -421,21 +512,68 @@ const Profile = () => {
 
             <TabsContent value="liked" className="mt-4">
               {likedEvents.length > 0 ? (
-                <div className="grid grid-cols-3 gap-1 md:gap-4">
+                <div className="space-y-4 max-w-2xl mx-auto">
                   {likedEvents.map(event => (
                     <div
                       key={event.id}
-                      className="aspect-square rounded-sm md:rounded-lg overflow-hidden cursor-pointer group relative"
+                      className="bg-card rounded-2xl overflow-hidden border border-border feed-card-shadow hover:shadow-lg transition-all duration-300 cursor-pointer"
                       onClick={() => navigate(`/post/${event.id}`)}
                     >
-                      <img
-                        src={event.image}
-                        alt={event.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                        <Heart className="h-6 w-6 text-white fill-white" />
+                      {/* Event Image */}
+                      <div className="aspect-video sm:aspect-square md:aspect-video lg:aspect-square relative overflow-hidden">
+                        <img
+                          src={event.image}
+                          alt={event.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
+                        />
+                        <div className="absolute top-3 right-3">
+                          <div className="bg-black/50 backdrop-blur-sm rounded-full p-2">
+                            <Heart className="h-4 w-4 text-white fill-white" />
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Event Content */}
+                      <div className="p-4 sm:p-6">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary/20 to-primary/10 flex items-center justify-center">
+                              <span className="text-primary font-bold text-sm">
+                                {event.organizerName.charAt(0).toUpperCase()}
+                              </span>
+                            </div>
+                            <div>
+                              <p className="font-semibold text-sm">{event.organizerName}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {new Date(event.createdAt).toLocaleDateString()}
+                              </p>
+                            </div>
+                          </div>
+                          <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-600">
+                            <Heart className="h-4 w-4 mr-1 fill-current" />
+                            {event.likes}
+                          </Button>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <h3 className="font-bold text-base sm:text-lg line-clamp-2">
+                            {event.title}
+                          </h3>
+                          <p className="text-sm text-muted-foreground line-clamp-3">
+                            {event.description}
+                          </p>
+                          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                            <span className="flex items-center gap-1">
+                              <MapPin className="h-3 w-3" />
+                              {event.location}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Calendar className="h-3 w-3" />
+                              {new Date(event.date).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   ))}

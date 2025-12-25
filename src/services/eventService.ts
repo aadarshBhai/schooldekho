@@ -90,7 +90,7 @@ export const fetchEvents = async (filters: EventFilters = {}): Promise<Event[]> 
     }
   });
 
-  const res = await fetch(`${API_BASE}/api/events?${params.toString()}`);
+  const res = await fetch(`/api/events?${params.toString()}`);
   if (!res.ok) throw new Error('Failed to fetch events');
   const events = await res.json();
   // Ensure each event has an `id` field for UI compatibility

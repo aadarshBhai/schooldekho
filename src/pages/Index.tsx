@@ -3,13 +3,12 @@ import { Navbar } from '@/components/Navbar';
 import { MobileNav } from '@/components/MobileNav';
 import { FeedCard } from '@/components/FeedCard';
 import { FloatingActionButton } from '@/components/FloatingActionButton';
-import { fetchEvents, fetchActiveAds, type Event, type SponsorAd, type EventFilters } from '@/services/eventService';
+import { fetchEvents, type Event, type EventFilters } from '@/services/eventService';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { OrganizationSchema, WebsiteSchema } from '@/components/StructuredData';
-import { SponsorAdCard } from '@/components/SponsorAdCard';
-import { AdvancedFilters } from '@/components/AdvancedFilters';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { PostDetail } from '@/components/PostDetail';
+import { Calendar } from 'lucide-react';
 
 const Index = () => {
   useEffect(() => {
@@ -22,7 +21,6 @@ const Index = () => {
   });
 
   const [events, setEvents] = useState<Event[]>([]);
-  const [ads, setAds] = useState<SponsorAd[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
@@ -30,17 +28,13 @@ const Index = () => {
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [selectedEventData, setSelectedEventData] = useState<Event | null>(null);
 
-  // Load events and ads from backend whenever filters change
+  // Load events from backend whenever filters change
   useEffect(() => {
     const load = async () => {
       setLoading(true);
       try {
-        const [fetchedEvents, fetchedAds] = await Promise.all([
-          fetchEvents(filters),
-          fetchActiveAds()
-        ]);
+        const fetchedEvents = await fetchEvents(filters);
         setEvents(fetchedEvents);
-        setAds(fetchedAds);
       } catch (err: any) {
         console.error('Failed to load feed data:', err);
         setError(err.message || 'Unknown error');
@@ -59,28 +53,6 @@ const Index = () => {
     setFilters(prev => ({ ...prev, query }));
   };
 
-  const interleavedFeed = useMemo(() => {
-    const feed: Array<{ type: 'event'; data: Event } | { type: 'ad'; data: SponsorAd }> = [];
-    const adInterval = 4; // Place an ad every 4 events
-    let adPointer = 0;
-
-    for (let i = 0; i < events.length; i++) {
-      feed.push({ type: 'event', data: events[i] });
-      if ((i + 1) % adInterval === 0 && adPointer < ads.length) {
-        feed.push({ type: 'ad', data: ads[adPointer] });
-        adPointer++;
-      }
-    }
-
-    // Append remaining ads if they haven't been shown
-    while (adPointer < ads.length) {
-      feed.push({ type: 'ad', data: ads[adPointer] });
-      adPointer++;
-    }
-
-    return feed;
-  }, [events, ads]);
-
   const handleEventClick = (event: Event) => {
     setSelectedEventData(event);
     setSelectedEventId(event.id);
@@ -94,64 +66,79 @@ const Index = () => {
     window.history.pushState({}, '', '/');
   };
 
+  const [activeCategory, setActiveCategory] = useState('all');
+  const filteredEvents = useMemo(() => {
+    if (activeCategory === 'all') return events;
+    return events.filter(event => event.category === activeCategory);
+  }, [events, activeCategory]);
+
   return (
     <>
       <OrganizationSchema />
       <WebsiteSchema />
-      <div className="min-h-screen pb-20 md:pb-0">
-        <Navbar searchQuery={filters.query || ''} onSearchChange={handleSearchChange} />
+      <div className="min-h-screen pb-20 md:pb-0 bg-background">
+        <Navbar />
 
-        <main className="container mx-auto px-4 py-6 max-w-2xl">
-          <header className="mb-6">
-            <h1 className="text-2xl md:text-4xl font-bold mb-2">Discover Community Events</h1>
-            <p className="text-sm md:text-base text-muted-foreground">Find and participate in events from schools, NGOs, and organizations near you</p>
+        <main className="container mx-auto px-3 xs:px-4 sm:px-6 py-4 xs:py-6 sm:py-8 max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl">
+          <header className="mb-4 xs:mb-6 sm:mb-8">
+            <h1 className="text-xl xs:text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">Discover Community Events</h1>
+            <p className="text-xs xs:text-sm sm:text-base text-muted-foreground">Find and participate in events from schools, NGOs, and organizations near you</p>
           </header>
 
-          <AdvancedFilters onFilterChange={handleFilterChange} currentFilters={filters} />
-
-          {/* Category Filters */}
-          <Tabs
-            value={filters.category || 'all'}
-            onValueChange={(val) => handleFilterChange({ category: val })}
-            className="mb-8"
-          >
-            <TabsList className="w-full justify-start overflow-x-auto bg-muted/50 p-1 h-11 border">
-              <TabsTrigger value="all" className="data-[state=active]:bg-primary data-[state=active]:text-white">All</TabsTrigger>
-              <TabsTrigger value="academic_tech" className="data-[state=active]:bg-primary data-[state=active]:text-white">Academic & Tech</TabsTrigger>
-              <TabsTrigger value="leadership_literary" className="data-[state=active]:bg-primary data-[state=active]:text-white">Leadership & Literary</TabsTrigger>
-              <TabsTrigger value="sports_fitness" className="data-[state=active]:bg-primary data-[state=active]:text-white">Sports & Fitness</TabsTrigger>
-              <TabsTrigger value="creative_arts" className="data-[state=active]:bg-primary data-[state=active]:text-white">Creative Arts</TabsTrigger>
+          {/* Category Tabs */}
+          <Tabs value={activeCategory} onValueChange={setActiveCategory} className="mb-6">
+            <TabsList className="w-full justify-start overflow-x-auto bg-muted/50 p-1 h-11 xs:h-12 border">
+              <TabsTrigger value="all" className="data-[state=active]:bg-primary data-[state=active]:text-white text-xs xs:text-sm whitespace-nowrap">All</TabsTrigger>
+              <TabsTrigger value="academic_tech" className="data-[state=active]:bg-primary data-[state=active]:text-white text-xs xs:text-sm whitespace-nowrap">Academic & Tech</TabsTrigger>
+              <TabsTrigger value="leadership_literary" className="data-[state=active]:bg-primary data-[state=active]:text-white text-xs xs:text-sm whitespace-nowrap">Leadership & Literary</TabsTrigger>
+              <TabsTrigger value="sports_fitness" className="data-[state=active]:bg-primary data-[state=active]:text-white text-xs xs:text-sm whitespace-nowrap">Sports & Fitness</TabsTrigger>
+              <TabsTrigger value="creative_arts" className="data-[state=active]:bg-primary data-[state=active]:text-white text-xs xs:text-sm whitespace-nowrap">Creative Arts</TabsTrigger>
             </TabsList>
           </Tabs>
 
-          <section aria-label="Event feed" className="space-y-6">
-            {loading ? (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground text-lg">Loading events...</p>
+          {/* Loading State */}
+          {loading && (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Loading events...</p>
+            </div>
+          )}
+
+          {/* Error State */}
+          {error && !loading && (
+            <div className="text-center py-12">
+              <div className="text-red-500 mb-4">
+                <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
               </div>
-            ) : error ? (
-              <div className="text-center py-12 text-red-500">
-                <p>Error loading events: {error}</p>
-              </div>
-            ) : interleavedFeed.length > 0 ? (
-              interleavedFeed.map((item, index) => (
-                <article key={item.type === 'event' ? item.data.id : `ad-${item.data.id}-${index}`}>
-                  {item.type === 'event' ? (
-                    <FeedCard
-                      event={item.data}
-                      onEventClick={handleEventClick}
-                    />
-                  ) : (
-                    <SponsorAdCard ad={item.data} />
-                  )}
-                </article>
-              ))
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground text-lg">No events found matching your search</p>
-              </div>
-            )}
-          </section>
+              <h3 className="text-lg font-semibold mb-2">Error Loading Events</h3>
+              <p className="text-muted-foreground mb-4">{error}</p>
+              <button 
+                onClick={() => window.location.reload()} 
+                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+              >
+                Try Again
+              </button>
+            </div>
+          )}
+
+          {/* Events Feed - Instagram Style Single Column */}
+          {!loading && !error && (
+            <div className="space-y-6 xs:space-y-8 sm:space-y-10">
+              {filteredEvents.length > 0 ? (
+                filteredEvents.map((event) => (
+                  <FeedCard key={event.id} event={event} onEventClick={() => handleEventClick(event)} />
+                ))
+              ) : (
+                <div className="text-center py-12">
+                  <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">No events found</h3>
+                  <p className="text-muted-foreground">Try adjusting your filters or check back later</p>
+                </div>
+              )}
+            </div>
+          )}
         </main>
 
         <FloatingActionButton />
