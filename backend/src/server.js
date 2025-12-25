@@ -22,27 +22,7 @@ const allowedOrigins = (process.env.FRONTEND_URLS || '')
   .filter(Boolean);
 
 app.use(cors({
-  origin: (origin, callback) => {
-    // Allow non-browser tools (no origin)
-    if (!origin) return callback(null, true);
-    
-    // In production, allow specific origins
-    if (process.env.NODE_ENV === 'production') {
-      const allowedOrigins = (process.env.FRONTEND_URLS || 'https://schooldekho.netlify.app')
-        .split(',')
-        .map(o => o.trim())
-        .filter(Boolean);
-      
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      console.log('CORS blocked origin:', origin);
-      return callback(new Error('Not allowed by CORS'));
-    }
-    
-    // In development, allow all origins
-    return callback(null, true);
-  },
+  origin: true,
   credentials: true,
 }));
 
