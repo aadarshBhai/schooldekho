@@ -13,15 +13,32 @@ import { ParticipationDialog } from '@/components/ParticipationDialog';
 interface FeedCardProps {
   event: Event;
   onEventClick?: (event: Event) => void;
+  searchQuery?: string;
 }
 
-export const FeedCard = ({ event, onEventClick }: FeedCardProps) => {
+export const FeedCard = ({ event, onEventClick, searchQuery = '' }: FeedCardProps) => {
   const [isLiked, setIsLiked] = useState(event.isLiked || false);
   const [likes, setLikes] = useState(event.likes);
   const [shares, setShares] = useState(event.shares);
   const [showParticipationDialog, setShowParticipationDialog] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
   const { user } = useAuth();
+
+  // Function to highlight text
+  const highlightText = (text: string, query: string) => {
+    if (!query.trim()) return text;
+    
+    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    const parts = text.split(regex);
+    
+    return parts.map((part, index) => 
+      regex.test(part) ? (
+        <span key={index} className="bg-yellow-300 text-black font-medium">{part}</span>
+      ) : (
+        part
+      )
+    );
+  };
 
   // Check if user has liked this event on mount
   useEffect(() => {
@@ -90,7 +107,7 @@ export const FeedCard = ({ event, onEventClick }: FeedCardProps) => {
         </Avatar>
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2">
-            <h3 className="font-semibold text-sm xs:text-base sm:text-lg truncate">{event.organizerName}</h3>
+            <h3 className="font-semibold text-sm xs:text-base sm:text-lg truncate">{highlightText(event.organizerName, searchQuery)}</h3>
             {event.isSponsored && (
               <Badge variant="secondary" className="hidden xs:flex items-center gap-1 text-[10px] xs:text-xs px-2 py-1 bg-amber-100 text-amber-800 border-amber-200">
                 <Megaphone className="w-3 h-3" />
@@ -173,7 +190,7 @@ export const FeedCard = ({ event, onEventClick }: FeedCardProps) => {
           className="font-bold text-lg xs:text-xl sm:text-2xl mb-2 cursor-pointer hover:text-primary transition-colors line-clamp-2 leading-tight"
           onClick={handleCardClick}
         >
-          {event.title}
+          {highlightText(event.title, searchQuery)}
         </h2>
 
         {/* Event Description */}

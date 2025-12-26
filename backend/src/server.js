@@ -11,6 +11,7 @@ import uploadRouter from './routes/upload.js';
 import participationRouter from './routes/participation.js';
 import adminRouter from './routes/admin.js';
 import adsRouter from './routes/sponsorAds.js';
+import announcementsRouter from './routes/announcements.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -36,6 +37,7 @@ app.use('/api/upload', uploadRouter);
 app.use('/api/participation', participationRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/ads', adsRouter);
+app.use('/api/announcements', announcementsRouter);
 
 // MongoDB connection
 if (!process.env.MONGO_URI) {

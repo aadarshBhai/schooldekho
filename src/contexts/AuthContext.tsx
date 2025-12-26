@@ -29,6 +29,7 @@ interface AuthContextType {
   logout: () => void;
   signup: (userData: Partial<User>) => Promise<boolean>;
   updateUser: (userData: Partial<User>) => Promise<boolean>;
+  refreshUser: () => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -210,8 +211,62 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const refreshUser = async (): Promise<boolean> => {
+    if (!token) {
+      console.log('AuthContext: No token found, cannot refresh user');
+      return false;
+    }
+
+    try {
+      console.log('AuthContext: Fetching user data from server...');
+      const response = await fetch(`${import.meta.env.VITE_API_BASE}/auth/profile`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const data = await response.json();
+      console.log('AuthContext: Server response:', { status: response.status, data });
+      console.log('AuthContext: Data structure:', Object.keys(data));
+      console.log('AuthContext: Has user property:', 'user' in data);
+
+      if (response.ok && data.user) {
+        const refreshedUser: User = {
+          id: data.user.id,
+          email: data.user.email,
+          name: data.user.name,
+          role: data.user.role,
+          verified: data.user.verified,
+          type: data.user.type,
+          avatar: data.user.avatar,
+          userSubtype: data.user.userSubtype,
+          grade: data.user.grade,
+          interests: data.user.interests,
+          parentalConsent: data.user.parentalConsent,
+          childPhone: data.user.childPhone,
+          bio: data.user.bio,
+          location: data.user.location,
+          website: data.user.website,
+          phone: data.user.phone,
+        };
+
+        console.log('AuthContext: Updated user data:', refreshedUser);
+        console.log('AuthContext: User verified status:', refreshedUser.verified);
+        setUser(refreshedUser);
+        localStorage.setItem('eventdekho_user', JSON.stringify(refreshedUser));
+        return true;
+      }
+      console.log('AuthContext: Failed to refresh user, status:', response.status, 'data:', data);
+      return false;
+    } catch (error) {
+      console.error('AuthContext: Refresh user error:', error);
+      return false;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ token, user, login, adminLogin, logout, signup, updateUser }}>
+    <AuthContext.Provider value={{ token, user, login, adminLogin, logout, signup, updateUser, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,9 +1,10 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { MobileNav } from '@/components/MobileNav';
 import { FeedCard } from '@/components/FeedCard';
 import { FloatingActionButton } from '@/components/FloatingActionButton';
 import { ProfileSidebar } from '@/components/ProfileSidebar';
+import { Announcements } from '@/components/Announcements';
 import { fetchEvents, type Event, type EventFilters } from '@/services/eventService';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { OrganizationSchema, WebsiteSchema } from '@/components/StructuredData';
@@ -21,6 +22,7 @@ const Index = () => {
     query: '',
   });
 
+  const [debouncedQuery, setDebouncedQuery] = useState('');
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
@@ -29,12 +31,22 @@ const Index = () => {
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [selectedEventData, setSelectedEventData] = useState<Event | null>(null);
 
-  // Load events from backend whenever filters change
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(filters.query || '');
+    }, 300); // 300ms delay
+
+    return () => clearTimeout(timer);
+  }, [filters.query]);
+
+  // Load events from backend whenever debounced filters change
   useEffect(() => {
     const load = async () => {
       setLoading(true);
       try {
-        const fetchedEvents = await fetchEvents(filters);
+        const searchFilters = { ...filters, query: debouncedQuery };
+        const fetchedEvents = await fetchEvents(searchFilters);
         setEvents(fetchedEvents);
       } catch (err: any) {
         console.error('Failed to load feed data:', err);
@@ -44,7 +56,7 @@ const Index = () => {
       }
     };
     load();
-  }, [filters]);
+  }, [debouncedQuery, filters.category]);
 
   const handleFilterChange = (newFilters: EventFilters) => {
     setFilters(prev => ({ ...prev, ...newFilters }));
@@ -68,25 +80,61 @@ const Index = () => {
   };
 
   const [activeCategory, setActiveCategory] = useState('all');
+  
+  // Client-side search with highlighting
   const filteredEvents = useMemo(() => {
-    if (activeCategory === 'all') return events;
-    return events.filter(event => event.category === activeCategory);
-  }, [events, activeCategory]);
+    let filtered = events;
+    
+    // Filter by category
+    if (activeCategory !== 'all') {
+      filtered = filtered.filter(event => event.category === activeCategory);
+    }
+    
+    // Filter by search query (client-side)
+    if (debouncedQuery.trim()) {
+      const query = debouncedQuery.toLowerCase();
+      filtered = filtered.filter(event => 
+        event.title.toLowerCase().includes(query) ||
+        event.organizerName.toLowerCase().includes(query) ||
+        event.description.toLowerCase().includes(query)
+      );
+    }
+    
+    return filtered;
+  }, [events, activeCategory, debouncedQuery]);
+
+  // Function to highlight text
+  const highlightText = (text: string, query: string) => {
+    if (!query.trim()) return text;
+    
+    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    const parts = text.split(regex);
+    
+    return parts.map((part, index) => 
+      regex.test(part) ? (
+        <span key={index} className="bg-yellow-300 text-black font-medium">{part}</span>
+      ) : (
+        part
+      )
+    );
+  };
 
   return (
     <>
       <OrganizationSchema />
       <WebsiteSchema />
       <div className="min-h-screen pb-20 md:pb-0 bg-background">
-        <Navbar />
+        <Navbar searchQuery={filters.query} onSearchChange={handleSearchChange} />
 
         <main className="container mx-auto px-3 xs:px-4 sm:px-6 py-4 xs:py-6 sm:py-8">
           <div className="flex gap-6 lg:gap-8">
-            {/* Profile Sidebar - Only shows on desktop when logged in */}
-            <ProfileSidebar />
+            {/* Left Sidebar - Profile */}
+            <div className="hidden lg:block w-80 flex-shrink-0">
+              <ProfileSidebar />
+            </div>
             
             {/* Main Content */}
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 max-w-2xl mx-auto">
               <header className="mb-4 xs:mb-6 sm:mb-8">
                 <h1 className="text-xl xs:text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">Discover Community Events</h1>
                 <p className="text-xs xs:text-sm sm:text-base text-muted-foreground">Find and participate in events from schools, NGOs, and organizations near you</p>
@@ -135,7 +183,7 @@ const Index = () => {
                 <div className="space-y-6 xs:space-y-8 sm:space-y-10">
                   {filteredEvents.length > 0 ? (
                     filteredEvents.map((event) => (
-                      <FeedCard key={event.id} event={event} onEventClick={() => handleEventClick(event)} />
+                      <FeedCard key={event.id} event={event} onEventClick={() => handleEventClick(event)} searchQuery={debouncedQuery} />
                     ))
                   ) : (
                     <div className="text-center py-12">
@@ -146,6 +194,11 @@ const Index = () => {
                   )}
                 </div>
               )}
+            </div>
+            
+            {/* Right Sidebar - Announcements */}
+            <div className="hidden lg:block w-80 flex-shrink-0">
+              <Announcements limit={5} />
             </div>
           </div>
         </main>

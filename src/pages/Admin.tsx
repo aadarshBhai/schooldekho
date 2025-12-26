@@ -18,6 +18,7 @@ import { LogOut, CheckCircle, XCircle, Edit, Trash2, Users, FileText, Play, Mega
 import { fetchEvents, createEvent, updateEvent, deleteEvent, approveEvent, fetchPendingUsers, verifyUser, deleteUser, type Event, type User, type AdminStats } from '@/services/eventService';
 import { EditEventDialog } from '@/components/EditEventDialog';
 import { AdminAdsTab } from '@/components/AdminAdsTab';
+import { AdminAnnouncements } from '@/components/AdminAnnouncements';
 
 
 const Admin = () => {
@@ -262,6 +263,7 @@ const Admin = () => {
             <TabsTrigger value="verify" className="rounded-lg">Verify Organizers</TabsTrigger>
             <TabsTrigger value="users" className="rounded-lg">All Users</TabsTrigger>
             <TabsTrigger value="posts" className="rounded-lg">Manage Posts</TabsTrigger>
+            <TabsTrigger value="announcements" className="rounded-lg">Announcements</TabsTrigger>
             <TabsTrigger value="ads" className="rounded-lg">Sponsor Ads</TabsTrigger>
             <TabsTrigger value="reports" className="rounded-lg">Reports</TabsTrigger>
           </TabsList>
@@ -521,6 +523,10 @@ const Admin = () => {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="announcements" className="space-y-4">
+            <AdminAnnouncements />
           </TabsContent>
 
           <TabsContent value="ads" className="space-y-4">

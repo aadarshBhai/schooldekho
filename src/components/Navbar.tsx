@@ -42,7 +42,7 @@ export const Navbar = ({ searchQuery = '', onSearchChange }: NavbarProps) => {
             <Search className="absolute left-2.5 xs:left-3 top-1/2 -translate-y-1/2 h-3.5 xs:h-4 w-3.5 xs:w-4 text-muted-foreground" />
             <Input
               placeholder="Search events..."
-              className="pl-8 xs:pl-9 bg-input-enhanced border-high-contrast h-8 xs:h-9 sm:h-10 text-xs xs:text-sm sm:text-base placeholder:text-muted-foreground"
+              className="pl-8 xs:pl-9 bg-background border-border h-8 xs:h-9 sm:h-10 text-xs xs:text-sm sm:text-base placeholder:text-muted-foreground"
               value={searchQuery}
               onChange={(e) => onSearchChange?.(e.target.value)}
             />
