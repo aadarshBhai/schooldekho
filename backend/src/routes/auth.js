@@ -283,17 +283,19 @@ router.get('/profile', auth, async (req, res) => {
 
     // Return profile data with defaults for optional fields
     res.json({
-      id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      verified: user.verified,
-      type: user.type || null,
-      avatar: user.avatar || null,
-      bio: user.bio || '',
-      location: user.location || '',
-      website: user.website || '',
-      phone: user.phone || ''
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        verified: user.verified,
+        type: user.type || null,
+        avatar: user.avatar || null,
+        bio: user.bio || '',
+        location: user.location || '',
+        website: user.website || '',
+        phone: user.phone || ''
+      }
     });
   } catch (error) {
     console.error('Fetch current profile error:', error);
